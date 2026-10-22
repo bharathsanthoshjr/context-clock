@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Context Clock",
+  "version": "0.1.0",
+  "description": "Adds your local date, time, and time zone to messages on ChatGPT, Claude, and Gemini.",
+  "action": {
+    "default_title": "Context Clock"
+  }
+}
