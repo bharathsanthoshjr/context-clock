@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Context Clock</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header">
+    <h1 class="title">Context Clock</h1>
+    <p class="subtitle">Adds your local time to AI chats</p>
+  </header>
+
+  <section class="card">
+    <label class="row">
+      <span class="row-label">Extension enabled</span>
+      <input type="checkbox" id="toggle-master" class="switch" role="switch" checked>
+    </label>
+  </section>
+
+  <section class="card" id="platform-section">
+    <h2 class="section-title">Platforms</h2>
+
+    <label class="row">
+      <span class="row-label">ChatGPT</span>
+      <input type="checkbox" class="switch platform-toggle" data-platform="chatgpt" role="switch" checked>
+    </label>
+
+    <label class="row">
+      <span class="row-label">Claude</span>
+      <input type="checkbox" class="switch platform-toggle" data-platform="claude" role="switch" checked>
+    </label>
+
+    <label class="row">
+      <span class="row-label">Gemini</span>
+      <input type="checkbox" class="switch platform-toggle" data-platform="gemini" role="switch" checked>
+    </label>
+  </section>
+
+  <section class="card">
+    <h2 class="section-title">Preview</h2>
+    <p id="preview" class="preview">Preview not available yet.</p>
+  </section>
+
+  <footer class="footer">Runs entirely in your browser. No data collected.</footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
