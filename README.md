@@ -10,4 +10,21 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 
 ## Status
 
-🚧 In development. Not yet tested on any platform.
+🚧 In development.
+
+| Platform | Status |
+|---|---|
+| ChatGPT | ✅ Working, tested manually on 6 Nov 2026 |
+| Claude | Not yet built |
+| Gemini | Not yet built |
+
+## How it works
+
+- **Automatic:** when you start typing or paste into an empty message box, a line like `[Sent: Fri 6 Nov 2026, 21:23 (Asia/Calcutta, UTC+05:30)]` is added at the start. It's visible, so you can edit or delete it before sending.
+- **Manual:** press **Alt+T** to insert the timestamp or refresh it to the current time.
+
+## Known limitations
+
+- A draft left unsent for a long time keeps its original timestamp. Press Alt+T before sending to refresh it.
+- Automatic mode may not trigger when typing with an IME (for example, some Malayalam, Chinese or Japanese keyboards). Alt+T still works.
+- Each website can change its page at any time, which may break the integration until it's updated.
