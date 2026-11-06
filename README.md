@@ -16,7 +16,7 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 |---|---|
 | ChatGPT | ✅ Working, tested manually on 6 Nov 2026 |
 | Claude | ✅ Working, tested manually on 6 Nov 2026 |
-| Gemini | Not yet built |
+| Gemini | ✅ Working, tested manually on 6 Nov 2026 |
 
 ## How it works
 

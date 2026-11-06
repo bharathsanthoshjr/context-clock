@@ -27,6 +27,16 @@
         "src/content/main.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": [
+        "src/shared/time-context.js",
+        "src/content/platforms/gemini.js",
+        "src/content/composer.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
     }
   ]
 }
