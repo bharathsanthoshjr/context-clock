@@ -6,5 +6,17 @@
   "action": {
     "default_title": "Context Clock",
     "default_popup": "popup/popup.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": [
+        "src/shared/time-context.js",
+        "src/content/platforms/chatgpt.js",
+        "src/content/composer.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
 }
