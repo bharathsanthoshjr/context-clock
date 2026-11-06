@@ -15,7 +15,7 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 | Platform | Status |
 |---|---|
 | ChatGPT | ✅ Working, tested manually on 6 Nov 2026 |
-| Claude | Not yet built |
+| Claude | ✅ Working, tested manually on 6 Nov 2026 |
 | Gemini | Not yet built |
 
 ## How it works
@@ -28,3 +28,4 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 - A draft left unsent for a long time keeps its original timestamp. Press Alt+T before sending to refresh it.
 - Automatic mode may not trigger when typing with an IME (for example, some Malayalam, Chinese or Japanese keyboards). Alt+T still works.
 - Each website can change its page at any time, which may break the integration until it's updated.
+- Chrome disables extensions in Incognito windows by default. To use Context Clock there, enable "Allow in Incognito" on the extension's Details page.

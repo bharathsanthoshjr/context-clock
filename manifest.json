@@ -17,6 +17,16 @@
         "src/content/main.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": [
+        "src/shared/time-context.js",
+        "src/content/platforms/claude.js",
+        "src/content/composer.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
     }
   ]
 }
