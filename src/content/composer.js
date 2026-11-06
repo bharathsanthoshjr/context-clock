@@ -2,12 +2,30 @@
 // Finds the message box and inserts or refreshes the context line.
 // Works on the unsent draft only; never touches sent messages.
 
-// Returns the first element matching any selector, or null if none is found.
+// True if the element is in the page and takes up space on screen.
+function isVisible(element) {
+  return element.isConnected && element.getClientRects().length > 0;
+}
+
+// Finds the message box the user is working in.
+// Sites like ChatGPT can keep old, hidden message boxes in the page after navigation,
+// so we prefer the focused box, then the first visible one.
 function findComposer(selectors) {
+  const focusedElement = document.activeElement;
+
   for (const selector of selectors) {
-    const element = document.querySelector(selector);
-    if (element) {
-      return element;
+    const matches = Array.from(document.querySelectorAll(selector));
+
+    const focused = matches.find(
+      (element) => element === focusedElement || element.contains(focusedElement)
+    );
+    if (focused) {
+      return focused;
+    }
+
+    const visible = matches.find(isVisible);
+    if (visible) {
+      return visible;
     }
   }
   return null;
