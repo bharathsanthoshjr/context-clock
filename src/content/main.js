@@ -1,17 +1,50 @@
-// Context Clock content script — Stage 6, Part D1
+// Context Clock content script — Stage 9
 // 1. Typing or pasting into an empty message box automatically adds the context line.
 // 2. Alt+T inserts or refreshes the context line at any time.
+// 3. Both only work when the extension and this site are switched on in the popup.
 // Uses: buildTimeContext and CONTEXT_PREFIX (time-context.js),
+//       loadSettings and isPlatformActive (settings.js),
 //       CONTEXT_CLOCK_PLATFORM (platforms/*.js),
 //       findComposer and insertContext (composer.js).
 
 const LOG_PREFIX = "[ContextClock]";
 
+// ---------- Settings ----------
+
+// null until loaded. Until then, the extension does nothing (fail-safe).
+let currentSettings = null;
+
+function isActiveHere() {
+  return isPlatformActive(currentSettings, CONTEXT_CLOCK_PLATFORM.id);
+}
+
+function logActiveState() {
+  const state = isActiveHere() ? "ON" : "OFF";
+  console.log(LOG_PREFIX, `${CONTEXT_CLOCK_PLATFORM.name}: ${state}`);
+}
+
+loadSettings().then((settings) => {
+  currentSettings = settings;
+  logActiveState();
+});
+
+// When the popup saves a change, update immediately (no reload needed).
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "local" || currentSettings === null) {
+    return;
+  }
+  for (const key in changes) {
+    currentSettings[key] = changes[key].newValue;
+  }
+  logActiveState();
+});
+
+// ---------- Insertion ----------
+
 // True while our own code is inserting text, so we ignore our own typing events.
 let isInsertingContext = false;
 
 // Inserts or refreshes the context line, and logs what happened.
-// "source" is just a label for the log: "typing", "paste" or "shortcut".
 function runInsertion(composer, source) {
   isInsertingContext = true;
   try {
@@ -44,10 +77,9 @@ function getComposerForEvent(event) {
 
 // ---------- Automatic mode ----------
 
-// Waits for the user's text to land, then adds the context line in front of it.
 function scheduleAutoInsert(composer, source) {
   setTimeout(() => {
-    if (!composer.isConnected) {
+    if (!isActiveHere() || !composer.isConnected) {
       return;
     }
     const text = composer.textContent;
@@ -58,35 +90,28 @@ function scheduleAutoInsert(composer, source) {
   }, 0);
 }
 
-// Typing: the browser fires "beforeinput" just before the text changes.
 function handleBeforeInput(event) {
-  if (isInsertingContext) {
-    return; // This is our own insertion; ignore it.
+  if (isInsertingContext || !isActiveHere()) {
+    return;
   }
   if (!event.inputType.startsWith("insert") || event.isComposing) {
-    return; // Only react to new text, and never during IME composition.
+    return;
   }
-
   const composer = getComposerForEvent(event);
   if (!composer || composer.textContent.trim() !== "") {
-    return; // Not the message box, or it already has text.
+    return;
   }
-
   scheduleAutoInsert(composer, "typing");
 }
 
-// Pasting: the editor handles pastes itself, so "beforeinput" never fires.
-// The "paste" event still fires first, so we listen for that too.
 function handlePaste(event) {
-  if (isInsertingContext) {
+  if (isInsertingContext || !isActiveHere()) {
     return;
   }
-
   const composer = getComposerForEvent(event);
   if (!composer || composer.textContent.trim() !== "") {
     return;
   }
-
   scheduleAutoInsert(composer, "paste");
 }
 
@@ -111,7 +136,7 @@ function isContextShortcut(event) {
 document.addEventListener(
   "keydown",
   (event) => {
-    if (isContextShortcut(event)) {
+    if (isContextShortcut(event) && isActiveHere()) {
       event.preventDefault();
       handleShortcut();
     }
@@ -119,7 +144,4 @@ document.addEventListener(
   true
 );
 
-console.log(
-  LOG_PREFIX,
-  `Loaded on ${CONTEXT_CLOCK_PLATFORM.name}. Start typing to add the time automatically, or press Alt+T.`
-);
+console.log(LOG_PREFIX, `Loaded on ${CONTEXT_CLOCK_PLATFORM.name}.`);

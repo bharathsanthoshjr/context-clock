@@ -22,6 +22,7 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 
 - **Automatic:** when you start typing or paste into an empty message box, a line like `[Sent: Fri 6 Nov 2026, 21:23 (Asia/Calcutta, UTC+05:30)]` is added at the start. It's visible, so you can edit or delete it before sending.
 - **Manual:** press **Alt+T** to insert the timestamp or refresh it to the current time.
+- **Controls:** the toolbar popup has a master switch and a separate switch for each site. Changes apply immediately and are saved on this device only.
 
 ## Known limitations
 

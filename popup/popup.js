@@ -1,6 +1,6 @@
-// Context Clock popup — Stage 5
-// Switches are NOT saved yet (that comes in Stage 9).
-// buildTimeContext() comes from src/shared/time-context.js, loaded before this file.
+// Context Clock popup — Stage 9
+// Shows saved settings when opened, and saves every change immediately.
+// Uses: buildTimeContext (time-context.js), loadSettings and saveSetting (settings.js).
 
 const masterToggle = document.getElementById("toggle-master");
 const platformSection = document.getElementById("platform-section");
@@ -10,33 +10,39 @@ const preview = document.getElementById("preview");
 // When the master switch is off, fade the platform list and lock its switches.
 function updatePlatformSectionState() {
   const isEnabled = masterToggle.checked;
-
   platformSection.classList.toggle("is-disabled", !isEnabled);
-
   platformToggles.forEach((toggle) => {
     toggle.disabled = !isEnabled;
   });
 }
 
-// Show the current context line in the Preview box.
 function updatePreview() {
   preview.textContent = buildTimeContext();
 }
 
-masterToggle.addEventListener("change", () => {
-  console.log("[ContextClock] Master switch:", masterToggle.checked);
+// Make the switches match what's saved.
+async function showSavedSettings() {
+  const settings = await loadSettings();
+  masterToggle.checked = settings.enabled;
+  platformToggles.forEach((toggle) => {
+    toggle.checked = settings[toggle.dataset.platform];
+  });
   updatePlatformSectionState();
+}
+
+masterToggle.addEventListener("change", async () => {
+  updatePlatformSectionState();
+  await saveSetting("enabled", masterToggle.checked);
+  console.log("[ContextClock] Saved master switch:", masterToggle.checked);
 });
 
 platformToggles.forEach((toggle) => {
-  toggle.addEventListener("change", () => {
-    console.log(`[ContextClock] ${toggle.dataset.platform}:`, toggle.checked);
+  toggle.addEventListener("change", async () => {
+    await saveSetting(toggle.dataset.platform, toggle.checked);
+    console.log(`[ContextClock] Saved ${toggle.dataset.platform}:`, toggle.checked);
   });
 });
 
-// Set the correct state as soon as the popup opens.
-updatePlatformSectionState();
+showSavedSettings();
 updatePreview();
-
-// Refresh the preview every second so the time stays current while the popup is open.
 setInterval(updatePreview, 1000);
