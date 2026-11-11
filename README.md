@@ -38,12 +38,14 @@ The full test record, including bugs found and fixed, is in [TESTING.md](TESTING
 
 ## Install
 
+## Install
+
 Context Clock is not published on the Chrome Web Store. To install it in developer mode:
 
-1. Download this repository (green **Code** button → **Download ZIP**, then unzip it).
+1. Download `context-clock-v1.0.0.zip` from the [latest release](https://github.com/bharathsanthoshjr/context-clock/releases/latest) and unzip it.
 2. Open `chrome://extensions` in Chrome.
 3. Turn on **Developer mode** (top right).
-4. Click **Load unpacked** and select the project folder.
+4. Click **Load unpacked** and select the unzipped folder.
 5. Pin Context Clock from the puzzle-piece menu in the toolbar.
 
 ## How it works
@@ -76,6 +78,7 @@ This project focuses on:
 - Automatic mode may not trigger when typing with an IME (for example, some Malayalam, Chinese, or Japanese keyboards). Alt+T still works.
 - Chrome disables extensions in Incognito windows by default. To use Context Clock there, enable "Allow in Incognito" on the extension's Details page.
 - Each website can change its page at any time, which may break the integration until its adapter is updated.
+- Because Context Clock is installed in developer mode rather than from the Chrome Web Store, Chrome requires Developer mode to stay on and may show a safety warning that it "can't verify where this extension comes from."
 
 ## Development
 
