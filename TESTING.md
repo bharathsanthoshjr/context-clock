@@ -13,7 +13,7 @@ Results were recorded during development, right after each feature was built. A 
 
 **Legend:** ✅ passed · ⬜ not yet tested · ✅\* failed at first, fixed, then passed
 
-## A. Insertion (tested 6 Nov 2026)
+## A. Insertion (tested 6 Nov 2026; A6 and A10 on Claude and Gemini tested 11 Nov 2026)
 
 | ID | Test | Expected | ChatGPT | Claude | Gemini |
 |---|---|---|---|---|---|
@@ -22,11 +22,11 @@ Results were recorded during development, right after each feature was built. A 
 | A3 | Send the message | Sent message contains the timestamp | ✅ | ✅ | ✅ |
 | A4 | Paste into an empty message box | Timestamp added in front | ✅\* | ✅ | ✅ |
 | A5 | Press Alt+T twice | Only one timestamp | ✅ | ✅ | ✅ |
-| A6 | Type text first, then press Alt+T | Timestamp inserted before the text | ✅ | ⬜ | ⬜ |
+| A6 | Type text first, then press Alt+T | Timestamp inserted before the text | ✅ | ✅ | ✅ |
 | A7 | Delete only the timestamp, keep typing | Timestamp does not come back | ✅ | ✅ | ✅ |
 | A8 | Clear the box completely, type again | Timestamp comes back | ✅ | ✅ | ✅ |
 | A9 | Open an old chat, then a new chat, then type | Timestamp appears in the visible new box | ✅\* | ✅ | ✅ |
-| A10 | Edit an already-sent message | Nothing added or changed automatically | ✅ | ⬜ | ⬜ |
+| A10 | Edit an already-sent message | Nothing added or changed automatically | ✅ | ✅ | ✅ |
 
 ## B. Settings (tested 10 Nov 2026)
 
@@ -57,7 +57,6 @@ Results were recorded during development, right after each feature was built. A 
 
 ## Gaps
 
-- A6 and A10 have not been tested on Claude or Gemini.
 - After the settings and error-handling changes (Stages 9–10), all insertion tests were re-checked on ChatGPT, but only partly on Claude and Gemini.
 - Not tested: other Chromium browsers (Edge, Brave), macOS or Linux, IME typing (e.g. some Malayalam keyboards), and drafts left unsent for a long time.
 - In tests, ChatGPT and Claude correctly noticed a "good morning" sent at night. Both apps may also give the model their own time information, so a comparison with the extension switched off has not been done yet.
