@@ -30,3 +30,12 @@ Context Clock adds a visible timestamp to each new message, so the assistant has
 - Automatic mode may not trigger when typing with an IME (for example, some Malayalam, Chinese or Japanese keyboards). Alt+T still works.
 - Each website can change its page at any time, which may break the integration until it's updated.
 - Chrome disables extensions in Incognito windows by default. To use Context Clock there, enable "Allow in Incognito" on the extension's Details page.
+## Install (developer mode)
+
+Context Clock is not yet on the Chrome Web Store. To try it:
+
+1. Download this repository (green **Code** button → **Download ZIP**, then unzip it).
+2. Open `chrome://extensions` in Chrome.
+3. Turn on **Developer mode** (top right).
+4. Click **Load unpacked** and select the project folder.
+5. Pin Context Clock from the puzzle-piece menu in the toolbar.
