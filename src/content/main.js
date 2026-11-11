@@ -1,7 +1,8 @@
-// Context Clock content script — Stage 9
+// Context Clock content script — Stage 10
 // 1. Typing or pasting into an empty message box automatically adds the context line.
 // 2. Alt+T inserts or refreshes the context line at any time.
 // 3. Both only work when the extension and this site are switched on in the popup.
+// 4. If settings can't be read, the extension stays off on this page (fail-safe).
 // Uses: buildTimeContext and CONTEXT_PREFIX (time-context.js),
 //       loadSettings and isPlatformActive (settings.js),
 //       CONTEXT_CLOCK_PLATFORM (platforms/*.js),
@@ -23,10 +24,15 @@ function logActiveState() {
   console.log(LOG_PREFIX, `${CONTEXT_CLOCK_PLATFORM.name}: ${state}`);
 }
 
-loadSettings().then((settings) => {
-  currentSettings = settings;
-  logActiveState();
-});
+loadSettings()
+  .then((settings) => {
+    currentSettings = settings;
+    logActiveState();
+  })
+  .catch((error) => {
+    // Settings stay null, so the extension stays off on this page (fail-safe).
+    console.warn(LOG_PREFIX, "Could not read settings; staying off on this page.", error);
+  });
 
 // When the popup saves a change, update immediately (no reload needed).
 chrome.storage.onChanged.addListener((changes, areaName) => {

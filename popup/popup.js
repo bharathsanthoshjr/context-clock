@@ -1,5 +1,6 @@
-// Context Clock popup — Stage 9
+// Context Clock popup — Stage 10
 // Shows saved settings when opened, and saves every change immediately.
+// If saving fails, the switch flips back so it never shows a state that wasn't saved.
 // Uses: buildTimeContext (time-context.js), loadSettings and saveSetting (settings.js).
 
 const masterToggle = document.getElementById("toggle-master");
@@ -22,24 +23,38 @@ function updatePreview() {
 
 // Make the switches match what's saved.
 async function showSavedSettings() {
-  const settings = await loadSettings();
-  masterToggle.checked = settings.enabled;
-  platformToggles.forEach((toggle) => {
-    toggle.checked = settings[toggle.dataset.platform];
-  });
-  updatePlatformSectionState();
+  try {
+    const settings = await loadSettings();
+    masterToggle.checked = settings.enabled;
+    platformToggles.forEach((toggle) => {
+      toggle.checked = settings[toggle.dataset.platform];
+    });
+    updatePlatformSectionState();
+  } catch (error) {
+    console.error("[ContextClock] Could not load settings:", error);
+  }
 }
 
-masterToggle.addEventListener("change", async () => {
+// Saves a switch. If saving fails, flips it back so the popup stays truthful.
+async function saveToggle(toggle, key) {
+  try {
+    await saveSetting(key, toggle.checked);
+    console.log(`[ContextClock] Saved ${key}:`, toggle.checked);
+  } catch (error) {
+    toggle.checked = !toggle.checked;
+    updatePlatformSectionState();
+    console.error(`[ContextClock] Could not save ${key}; switch restored.`, error);
+  }
+}
+
+masterToggle.addEventListener("change", () => {
   updatePlatformSectionState();
-  await saveSetting("enabled", masterToggle.checked);
-  console.log("[ContextClock] Saved master switch:", masterToggle.checked);
+  saveToggle(masterToggle, "enabled");
 });
 
 platformToggles.forEach((toggle) => {
-  toggle.addEventListener("change", async () => {
-    await saveSetting(toggle.dataset.platform, toggle.checked);
-    console.log(`[ContextClock] Saved ${toggle.dataset.platform}:`, toggle.checked);
+  toggle.addEventListener("change", () => {
+    saveToggle(toggle, toggle.dataset.platform);
   });
 });
 
