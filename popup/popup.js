@@ -1,5 +1,7 @@
-// Context Clock popup — Stage 10
+// Context Clock popup — v1.0.1
 // Shows saved settings when opened, and saves every change immediately.
+// When the master switch is off, every site switch shows as off (display only);
+// each site's saved choice is kept and comes back when the master switch is turned on.
 // If saving fails, the switch flips back so it never shows a state that wasn't saved.
 // Uses: buildTimeContext (time-context.js), loadSettings and saveSetting (settings.js).
 
@@ -8,12 +10,17 @@ const platformSection = document.getElementById("platform-section");
 const platformToggles = document.querySelectorAll(".platform-toggle");
 const preview = document.getElementById("preview");
 
-// When the master switch is off, fade the platform list and lock its switches.
+// The user's saved choice for each site, e.g. { chatgpt: true, claude: false, gemini: true }.
+const savedPlatformStates = {};
+
+// When the master switch is off: fade the list, lock the switches, and show them all as off.
+// When it's on: unlock them and show each site's saved choice.
 function updatePlatformSectionState() {
   const isEnabled = masterToggle.checked;
   platformSection.classList.toggle("is-disabled", !isEnabled);
   platformToggles.forEach((toggle) => {
     toggle.disabled = !isEnabled;
+    toggle.checked = isEnabled && savedPlatformStates[toggle.dataset.platform] === true;
   });
 }
 
@@ -27,7 +34,8 @@ async function showSavedSettings() {
     const settings = await loadSettings();
     masterToggle.checked = settings.enabled;
     platformToggles.forEach((toggle) => {
-      toggle.checked = settings[toggle.dataset.platform];
+      const key = toggle.dataset.platform;
+      savedPlatformStates[key] = settings[key];
     });
     updatePlatformSectionState();
   } catch (error) {
@@ -35,26 +43,34 @@ async function showSavedSettings() {
   }
 }
 
-// Saves a switch. If saving fails, flips it back so the popup stays truthful.
+// Saves a switch. Returns true if saved; if saving fails, flips it back and returns false.
 async function saveToggle(toggle, key) {
   try {
     await saveSetting(key, toggle.checked);
     console.log(`[ContextClock] Saved ${key}:`, toggle.checked);
+    return true;
   } catch (error) {
     toggle.checked = !toggle.checked;
-    updatePlatformSectionState();
     console.error(`[ContextClock] Could not save ${key}; switch restored.`, error);
+    return false;
   }
 }
 
-masterToggle.addEventListener("change", () => {
+masterToggle.addEventListener("change", async () => {
   updatePlatformSectionState();
-  saveToggle(masterToggle, "enabled");
+  const saved = await saveToggle(masterToggle, "enabled");
+  if (!saved) {
+    updatePlatformSectionState();
+  }
 });
 
 platformToggles.forEach((toggle) => {
-  toggle.addEventListener("change", () => {
-    saveToggle(toggle, toggle.dataset.platform);
+  toggle.addEventListener("change", async () => {
+    const key = toggle.dataset.platform;
+    const saved = await saveToggle(toggle, key);
+    if (saved) {
+      savedPlatformStates[key] = toggle.checked;
+    }
   });
 });
 
